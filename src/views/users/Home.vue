@@ -2,64 +2,111 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
-const query = ref('')
 const books = ref([])
+const query = ref('')
+let loading = ref(false)
 
-const searchBooks = async () => {
+const fetchApi = async () => {
+  loading.value = true
   try {
-    const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
+    const res = await axios.get('https://openlibrary.org/search.json', {
       params: {
-        q: query.value
+        q: query.value,
+        limit: 20
       }
     })
-
-    books.value = response.data.items || []
+    books.value = res.data.docs
+    console.log(books.value)
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.log('Error fetching data', error)
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
-  <nav class="navbar navbar-light bg-light py-3">
+  <nav class="navbar navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="#">Book search</a>
-      <button class="btn btn-danger ms-3">Log out</button>
+      <a href="#" class="navbar-brand">Book search</a>
+
+      <div class="d-flex align-items-center">
+        <span>Username</span>
+        <button class="btn btn-danger ms-3" type="button">Log out</button>
+      </div>
     </div>
   </nav>
 
-  <div class="container mt-5">
+  <div class="container mt-4">
     <div class="row justify-content-center">
-      <div class="col-lg-5 col-12">
-        <form class="d-flex" role="search" @submit.prevent="searchBooks">
-          <input
-              @input.prevent="searchBooks"
-            v-model="query"
-            class="form-control me-2"
-            type="search"
-            placeholder="Search for books by title, author, or keywords"
-            aria-label="Search"
-          />
-          <button class="btn btn-primary" type="submit">Search</button>
+      <div class="col-lg-5 col-10">
+        <form class="d-flex" @submit.prevent="fetchApi">
+          <input v-model="query" type="search" class="form-control me-2" />
+          <button v-if="!loading" type="submit" class="btn btn-success">Search</button>
+          <button v-else class="btn btn-success d-flex align-items-center" type="button" disabled>
+            <span
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Loading...
+          </button>
         </form>
       </div>
     </div>
 
-    <div class="row mt-5">
-      <div class="col-4 mb-3 d-flex justify-content-between" v-for="book in books" :key="book.id">
-        <div class="card w-100">
-          <div class="card-body d-flex">
-            <img :src="book.volumeInfo.imageLinks.thumbnail" class="h-75" alt="book-cover" />
-            <div class="ms-3">
-              <p>Title: <b>{{book.volumeInfo.title}}</b></p>
-              <p>Authors: <b>{{book.volumeInfo.authors[0]}}</b></p>
-              <router-link to="/login" class="btn btn-primary btn-sm">See more</router-link>
-            </div>
-          </div>
+    <div class="row mt-4">
+      <div class="col-lg-4 col-6 col-sm-6 col-12 d-flex mb-4" v-for="book in books" :key="book.key">
+        <img
+          v-if="book.cover_i"
+          :src="'https://covers.openlibrary.org/b/id/' + book.cover_i + '-L.jpg'"
+          class="thumbnail img-thumbnail"
+          alt="Book cover image"
+        />
+        <img
+          v-else
+          class="thumbnail"
+          src="https://openlibrary.org/images/icons/avatar_book.png"
+          alt="Book cover image"
+        />
+        <div class="ms-3 mt-3">
+          <router-link
+            :to="'/book/' + book.key.replace('/works/', '')"
+            class="font-weight-bold text-decoration-none text-black book-title"
+          >
+            <p>{{ book.title }}</p>
+          </router-link>
+          <p class="font-weight-medium book-subtitle" v-if="book.author_name.length <= 100">
+            by {{ book.author_name.join(', ') }}
+          </p>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.book-title {
+  font-size: 18px;
+}
+
+.thumbnail {
+  width: 200px;
+  height: 300px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .thumbnail {
+    width: 100px;
+    height: 150px;
+  }
+
+  .book-title {
+    font-size: 14px;
+  }
+
+  .book-subtitle {
+    font-size: 12px;
+  }
+}
+</style>

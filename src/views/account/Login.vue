@@ -9,11 +9,18 @@
           <form class="card-body">
             <div class="mb-3">
               <label for="inputUsername" class="form-label">Username: </label>
-              <input type="text" class="form-control" id="inputUsername" pattern="/^[a-zA-Z]+$/" />
+              <input
+                type="text"
+                class="form-control"
+                id="inputUsername"
+                pattern="/^[a-zA-Z]+$/"
+                title="Please use only letters!"
+                required
+              />
             </div>
             <div class="mb-3">
               <label for="inputPassword" class="form-label">Password: </label>
-              <input type="password" class="form-control" id="inputPassword" />
+              <input type="password" class="form-control" id="inputPassword" required />
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <button type="submit" class="btn btn-primary">Log in</button>
