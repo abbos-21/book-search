@@ -108,28 +108,4 @@ const openBookDetails = (id) => {
 tbody tr {
   cursor: pointer;
 }
-
-.book-title {
-  font-size: 18px;
-}
-
-.thumbnail {
-  width: 200px;
-  height: 300px;
-}
-
-@media only screen and (max-width: 1200px) {
-  .thumbnail {
-    width: 100px;
-    height: 150px;
-  }
-
-  .book-title {
-    font-size: 14px;
-  }
-
-  .book-subtitle {
-    font-size: 12px;
-  }
-}
 </style>
