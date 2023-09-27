@@ -31,20 +31,19 @@ const fetchApi = async () => {
 
 const openBookDetails = (id) => {
   const route = {
-    name: "Book Details",
+    name: 'Book Details',
     params: { id: id }
-  };
-  const url = router.resolve(route).href;
-  window.open(url, '_blank');
-};
-
+  }
+  const url = router.resolve(route).href
+  window.open(url, '_blank')
+}
 </script>
 
 <template>
   <nav class="navbar navbar-light bg-light">
     <div class="container">
       <a href="#" class="navbar-brand">Book search</a>
-        <button class="btn btn-danger ms-3" type="button" @click="logout">Log out</button>
+      <button class="btn btn-danger ms-3" type="button" @click="logout">Log out</button>
     </div>
   </nav>
 
@@ -52,13 +51,23 @@ const openBookDetails = (id) => {
     <div class="row justify-content-center">
       <div class="col-lg-5 col-10">
         <form class="d-flex" @submit.prevent="fetchApi">
-          <input v-model="query" type="search" class="form-control me-2" placeholder="Enter a search term" />
+          <input
+            v-model="query"
+            type="search"
+            class="form-control me-2"
+            placeholder="Enter a search term"
+          />
 
-          <button v-if="loading" class="btn btn-success d-flex align-items-center" type="button" disabled>
+          <button
+            v-if="loading"
+            class="btn btn-success d-flex align-items-center"
+            type="button"
+            disabled
+          >
             <span
-                class="spinner-border spinner-border-sm me-1"
-                role="status"
-                aria-hidden="true"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"
             ></span>
             Searching...
           </button>
@@ -70,21 +79,25 @@ const openBookDetails = (id) => {
     <div class="row mt-4">
       <table class="table table-bordered">
         <thead>
-        <tr>
-          <th scope="col">Thumbnail</th>
-          <th scope="col">Title</th>
-          <th scope="col">Author</th>
-        </tr>
+          <tr>
+            <th scope="col">Thumbnail</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="book in books" :key="book.key" @click="openBookDetails(book.id)">
-          <th>
-            <img v-if="book.volumeInfo.imageLinks.smallThumbnail" :src="book.volumeInfo.imageLinks.smallThumbnail" alt="">
-          </th>
-          <td>{{book.volumeInfo.title}}</td>
-          <td v-if="book.volumeInfo.authors">{{book.volumeInfo.authors.join(", ")}}</td>
-          <td v-else>No data</td>
-        </tr>
+          <tr v-for="book in books" :key="book.key" @click="openBookDetails(book.id)">
+            <th>
+              <img
+                v-if="book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.smallThumbnail"
+                :src="book.volumeInfo.imageLinks.smallThumbnail"
+                alt=""
+              />
+            </th>
+            <td>{{ book.volumeInfo.title }}</td>
+            <td v-if="book.volumeInfo.authors">{{ book.volumeInfo.authors.join(', ') }}</td>
+            <td v-else>No data</td>
+          </tr>
         </tbody>
       </table>
     </div>

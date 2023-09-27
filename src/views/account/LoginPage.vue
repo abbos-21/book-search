@@ -1,33 +1,23 @@
 <script setup>
 import { ref } from 'vue'
 import router from '@/router/router'
-import userDetails from '@/helpers/fake-backend'
 
 let username = ref('')
 let password = ref('')
 let loading = ref(false)
-let loginError = ref(false)
-
-let isAuth = false
+let inputError = ref(false)
 
 const login = () => {
   loading.value = true
-  userDetails.forEach((e) => {
-    if (e.username === username.value && e.password === password.value) {
-      isAuth = true
-    }
-  })
 
   setTimeout(() => {
-    if (isAuth) {
-      localStorage.setItem('token', username.value)
-      router.push('/home')
-    } else {
-      loading.value = false
-      password.value = ''
-      loginError.value = true
-    }
+    localStorage.setItem('token', username.value)
+    router.push('/home')
   }, 3000)
+}
+
+function checkInput() {
+  inputError.value = username.value.length !== 16;
 }
 </script>
 
@@ -41,6 +31,7 @@ const login = () => {
             <div class="mb-3">
               <label for="inputUsername" class="form-label">Username: </label>
               <input
+                @input="checkInput"
                 v-model="username"
                 type="text"
                 class="form-control"
@@ -48,10 +39,13 @@ const login = () => {
                 pattern="^[A-Za-z]+$"
                 title="Please use only letters!"
                 required
-                minlength="16"
                 aria-describedby="inputHelp"
+                minlength="16"
+                maxlength="16"
               />
-              <div v-if="loginError" id="inputHelp" class="form-text text-danger">Invalid credentials</div>
+              <div v-if="inputError" class="form-text text-danger">
+                The username must be 16 characters
+              </div>
             </div>
             <div class="mb-3">
               <label for="inputPassword" class="form-label">Password: </label>
@@ -65,7 +59,11 @@ const login = () => {
             </div>
 
             <button v-if="loading" class="btn btn-primary" type="button" disabled>
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
               Logging in...
             </button>
 

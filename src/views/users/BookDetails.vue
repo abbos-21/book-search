@@ -34,15 +34,19 @@ fetchApi()
     <div class="row" v-if="!loading">
       <div class="col-12 d-flex flex-md-row flex-column align-items-md-stretch align-items-center">
         <img
-            v-if="book.volumeInfo.imageLinks.large"
+          v-if="book.volumeInfo.imageLinks.large"
           :src="book.volumeInfo.imageLinks.large"
           alt="Book cover image"
           class="img-thumbnail"
         />
 
         <div class="ms-md-4 ms-0 mt-md-0 mt-4">
-          <p v-if="book.volumeInfo.title" class="font-weight-bold book-title">{{ book.volumeInfo.title }}</p>
-          <p v-if="book.volumeInfo.authors" class="font-weight-medium">by {{book.volumeInfo.authors.join(', ')}}</p>
+          <p v-if="book.volumeInfo.title" class="font-weight-bold book-title">
+            {{ book.volumeInfo.title }}
+          </p>
+          <p v-if="book.volumeInfo.authors" class="font-weight-medium">
+            by {{ book.volumeInfo.authors.join(', ') }}
+          </p>
           <p v-if="book.volumeInfo.description" v-html="book.volumeInfo.description"></p>
           <p v-else class="">No description</p>
         </div>

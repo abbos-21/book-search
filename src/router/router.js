@@ -23,12 +23,12 @@ const routes = [
   {
     path: '/login',
     component: LoginPage,
-    name: "Login"
+    name: 'Login'
   },
   {
     path: '/book/:id',
     component: BookDetails,
-    name: "Book Details",
+    name: 'Book Details',
     meta: {
       requiresAuth: true
     }
@@ -44,13 +44,12 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('token')
   const isRequiredAuth = to.meta.requiresAuth
 
-  if (to.name === "Login" && isAuthenticated) return next("/home")
+  if (to.name === 'Login' && isAuthenticated) return next('/home')
 
   if (!isRequiredAuth) return next()
 
   if (isAuthenticated) return next()
-  else return next ("/login")
-});
-
+  else return next('/login')
+})
 
 export default router
