@@ -10,9 +10,12 @@ let loading = ref(false)
 const fetchApi = async () => {
   loading.value = true
   try {
-    const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${route.params.id}`)
+    const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${route.params.id}`, {
+      params: {
+        key: "AIzaSyB9fMRB6Nu6_PRtka42FUTKNZKFa8_0Ipw"
+      }
+    })
     book.value = res.data
-    console.log(book.value)
   } catch (error) {
     console.log('Error fetching data', error)
   } finally {
@@ -34,7 +37,7 @@ fetchApi()
     <div class="row" v-if="!loading">
       <div class="col-12 d-flex flex-md-row flex-column align-items-md-stretch align-items-center">
         <img
-          v-if="book.volumeInfo.imageLinks.large"
+          v-if="book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.large"
           :src="book.volumeInfo.imageLinks.large"
           alt="Book cover image"
           class="img-thumbnail"

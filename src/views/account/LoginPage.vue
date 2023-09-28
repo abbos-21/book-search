@@ -16,7 +16,7 @@ const login = () => {
   }, 3000)
 }
 
-function checkInput() {
+const checkInput = () => {
   inputError.value = username.value.length !== 16;
 }
 </script>

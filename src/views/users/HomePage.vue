@@ -3,11 +3,6 @@ import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router/router'
 
-function logout() {
-  localStorage.removeItem('token')
-  router.push('/login')
-}
-
 const books = ref([])
 const query = ref('')
 let loading = ref(false)
@@ -17,7 +12,8 @@ const fetchApi = async () => {
   try {
     const res = await axios.get('https://www.googleapis.com/books/v1/volumes', {
       params: {
-        q: query.value
+        q: query.value,
+        key: "AIzaSyB9fMRB6Nu6_PRtka42FUTKNZKFa8_0Ipw"
       }
     })
     books.value = res.data.items
@@ -25,17 +21,21 @@ const fetchApi = async () => {
     console.log('Error fetching data', error)
   } finally {
     loading.value = false
-    console.log(books.value)
   }
 }
 
-const openBookDetails = (id) => {
+const openBookDetailsInNewTab = (id) => {
   const route = {
     name: 'Book Details',
     params: { id: id }
   }
   const url = router.resolve(route).href
   window.open(url, '_blank')
+}
+
+const logout = () => {
+  localStorage.removeItem('token')
+  router.push('/login')
 }
 </script>
 
@@ -86,7 +86,7 @@ const openBookDetails = (id) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="book in books" :key="book.key" @click="openBookDetails(book.id)">
+          <tr v-for="book in books" :key="book.key" @click="openBookDetailsInNewTab(book.id)">
             <th>
               <img
                 v-if="book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.smallThumbnail"
@@ -94,7 +94,8 @@ const openBookDetails = (id) => {
                 alt=""
               />
             </th>
-            <td>{{ book.volumeInfo.title }}</td>
+            <td v-if="book.volumeInfo.title">{{ book.volumeInfo.title }}</td>
+            <td v-else>No data</td>
             <td v-if="book.volumeInfo.authors">{{ book.volumeInfo.authors.join(', ') }}</td>
             <td v-else>No data</td>
           </tr>
